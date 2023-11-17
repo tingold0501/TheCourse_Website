@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\UserM;
 use Illuminate\Http\Request;
 
-class USerController extends Controller
+class UserRoleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +14,7 @@ class USerController extends Controller
      */
     public function index()
     {
-        return view("user.user");
+        return view("layout.layout");
     }
 
     /**

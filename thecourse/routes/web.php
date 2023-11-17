@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\USerController;
+use App\Http\Controllers\UserRoleController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,4 +14,5 @@ use App\Http\Controllers\USerController;
 |
 */
 
-Route::get('/',[UserController::class, 'index']);
+Route::get('/',[UserRoleController::class, 'index']);
+Route::get('/user',[USerController::class, 'index']);
