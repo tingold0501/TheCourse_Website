@@ -93,39 +93,17 @@
                                         <span class="text-xs font-weight-bold">{{ $item->created_at }}</span>
                                     </td>
                                     <td class="">
-                                      <select name="" id="" class="form-control">
-                                        
-                                        <option value="1">
-                                          {{-- <div class="progress-wrapper w-100">
-                                            <div class="progress-info">
-                                                <div class="progress-percentage">
-                                                    <span class="text-xs font-weight-bold">Đang Mở</span>
-                                                    <div class="progress">
-                                                      <div class="progress-bar bg-gradient-info w-100"
-                                                          role="progressbar" aria-valuenow="10" aria-valuemin="0"
-                                                          aria-valuemax="100"></div>
-                                                  </div>
-                                                </div>
-                                            </div>
-                                        </div> --}}
-                                        Đang Mở
-                                        </option>
-                                        <option value="0">
-                                          {{-- <div class="progress-wrapper w-100">
-                                            <div class="progress-info">
-                                                <div class="progress-percentage">
-                                                    <span class="text-xs font-weight-bold">Đang Khóa</span>
-                                                    <div class="progress">
-                                                      <div class="progress-bar bg-gradient-info w-100"
-                                                          role="progressbar" aria-valuenow="10" aria-valuemin="0"
-                                                          aria-valuemax="100"></div>
-                                                  </div>
-                                                </div>
-                                            </div>
-                                        </div> --}}
-                                        Đang Khóa
-                                        </option>
-                                      </select>
+                                        @if ($item->status == 1)
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="1" id="flexCheckDefault" checked>
+                                            <input class="form-check-input" type="checkbox" value="0" id="flexCheckDefault" >
+                                          </div>
+                                          @else
+                                          <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="0" id="flexCheckDefault" >
+                                            <input class="form-check-input" type="checkbox" value="1" id="flexCheckDefault" checked>
+                                        </div>
+                                        @endif
                                        
                                     </td>
                                     <td class="  text-sm">

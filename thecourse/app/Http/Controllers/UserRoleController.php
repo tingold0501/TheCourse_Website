@@ -27,10 +27,11 @@ class UserRoleController extends Controller
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'roleName' => 'required',
+            'roleName' => 'required|unique:role_tbl,name',
             
         ],[
-            'roleName.required'=>'Thiếu tên loại tài khoản'
+            'roleName.required'=>'Thiếu tên loại tài khoản',
+            'roleName.unique'=>'Loại Tài Khoản Đã Tồn Tại',
         ]);
         if ($validator->fails()) {
             return response()->json(['check'=>false,'message'=> $validator->errors()]);
