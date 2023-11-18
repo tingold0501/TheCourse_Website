@@ -1,1 +1,1 @@
-users
+@extends('layout.layout')

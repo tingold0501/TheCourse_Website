@@ -14,7 +14,7 @@ class UserRoleController extends Controller
      */
     public function index()
     {
-        return view("layout.layout");
+        return view("user.roles");
     }
 
     /**
