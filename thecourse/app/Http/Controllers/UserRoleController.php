@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UserM;
+use App\Models\UserRoleM;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class UserRoleController extends Controller
 {
@@ -14,7 +15,8 @@ class UserRoleController extends Controller
      */
     public function index()
     {
-        return view("user.roles");
+        $roles = UserRoleM::all();
+        return view("user.roles",compact("roles"));
     }
 
     /**
@@ -22,9 +24,19 @@ class UserRoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'roleName' => 'required',
+            
+        ],[
+            'roleName.required'=>'Thiếu tên loại tài khoản'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['check'=>false,'message'=> $validator->errors()]);
+        }
+        UserRoleM::create(['name'=>$request->roleName]);
+        return response()->json(['check'=>true]);
     }
 
     /**

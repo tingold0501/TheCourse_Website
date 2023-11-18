@@ -14,5 +14,14 @@ use App\Http\Controllers\UserRoleController;
 |
 */
 
-Route::get('/',[UserRoleController::class, 'index']);
-Route::get('/user',[USerController::class, 'index']);
+Route::controller(UserRoleController::class)->group(function () {
+    Route::get('/userrole', 'index');
+    Route::post('/userrole', 'create');
+});
+
+Route::controller(USerController::class)->group(function () {
+    Route::get('/user', 'index');
+});
+
+
+
