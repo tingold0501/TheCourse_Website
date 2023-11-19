@@ -23,6 +23,9 @@
         </div>
     </div>
 
+
+
+
     {{-- End Modal --}}
 
 
@@ -75,6 +78,7 @@
                             @foreach ($roles as $key => $item)
                                 <tr>
                                     <td>
+
                                         <div class="d-flex px-2 py-1">
                                             <div class="d-flex flex-column justify-content-center">
                                                 <h6 class="mb-0 text-sm">{{ ++$key }}</h6>
@@ -84,7 +88,8 @@
                                     <td>
                                         <div class="d-flex px-2 py-1">
                                             <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">{{ $item->name }}</h6>
+                                                <h6 data-id="{{ $item->id }}"
+                                                    class="cursor-pointer mb-0 text-sm editRow">{{ $item->name }}</h6>
                                             </div>
                                         </div>
                                     </td>
@@ -93,18 +98,15 @@
                                         <span class="text-xs font-weight-bold">{{ $item->created_at }}</span>
                                     </td>
                                     <td class="">
-                                        @if ($item->status == 1)
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="1" id="flexCheckDefault" checked>
-                                            <input class="form-check-input" type="checkbox" value="0" id="flexCheckDefault" >
-                                          </div>
-                                          @else
-                                          <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="0" id="flexCheckDefault" >
-                                            <input class="form-check-input" type="checkbox" value="1" id="flexCheckDefault" checked>
-                                        </div>
-                                        @endif
-                                       
+                                        <select class="form-control" name="" id="">
+                                            @if ($item->status == 0)
+                                                <option value="0" selected>Đang Khóa</option>
+                                                <option value="1">Đang Mở</option>
+                                            @else
+                                                <option value="1" selected>Đang Mở</option>
+                                                <option value="0">Đang Khóa</option>
+                                            @endif
+                                        </select>
                                     </td>
                                     <td class="  text-sm">
                                         <button type="button" class="btn btn-danger">Xóa</button>
@@ -133,6 +135,7 @@
         });
         $(document).ready(function() {
             addRole();
+            editRole();
         });
 
         function addRole() {
@@ -147,7 +150,7 @@
                 } else {
                     $.ajax({
                         type: "post",
-                        url: "/userrole",
+                        url: "/addRole",
                         data: {
                             roleName: roleName
                         },
@@ -157,11 +160,76 @@
                                 Toast.fire({
                                     icon: "success",
                                     title: "Gữi yêu cầu thành công!"
-                                });
+                                }).then(() => {
+                                    window.location.reload();
+                                })
+                            }
+                            if (res.msg.roleName) {
+                                Toast.fire({
+                                    icon: "error",
+                                    title: res.msg.roleName
+                                })
                             }
                         }
                     });
                 }
+            });
+        }
+
+        function editRole() {
+            $('.editRow').click(function(e) {
+                e.preventDefault();
+                var id = $(this).attr('data-id');
+                var old = $(this).text();
+                $('#roleName').val(old);
+                $('#exampleModal').modal('show');
+                $("#submitAddRole").click(function(e) {
+                    e.preventDefault();
+                    var roleName = $('#roleName').val().trim();
+                    if (roleName == '') {
+                        Toast.fire({
+                            icon: "error",
+                            title: res.msg.roleName
+                        });
+                    } else if (roleName == old) {
+                        Toast.fire({
+                            icon: "error",
+                            title: "Vui lòng nhập dữ liệu mới!"
+                        });
+                    } else {
+                        $.ajax({
+                            type: "post",
+                            url: "/updateRole",
+                            data: {
+                                id: id,
+                                roleName: roleName,
+                            },
+                            dataType: "JSON",
+                            success: function(res) {
+                                if (res.check == true) {
+                                    Toast.fire({
+                                        icon: "success",
+                                        title: "Thay Đổi Thành Công"
+                                    }).then(()=>{
+                                        window.location.reload();
+                                    })
+                                }
+                                if(res.msg.id){
+                                    Toast.fire({
+                                        icon: "error",
+                                        title: res.msg.id
+                                    });
+                                }
+                                else if(res.msg.roleName){
+                                    Toast.fire({
+                                        icon: "error",
+                                        title: res.msg.roleName
+                                    });
+                                }
+                            }
+                        });
+                    }
+                });
             });
         }
     </script>

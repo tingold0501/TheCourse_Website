@@ -34,7 +34,7 @@ class UserRoleController extends Controller
             'roleName.unique'=>'Loại Tài Khoản Đã Tồn Tại',
         ]);
         if ($validator->fails()) {
-            return response()->json(['check'=>false,'message'=> $validator->errors()]);
+            return response()->json(['check'=>false,'msg'=> $validator->errors()]);
         }
         UserRoleM::create(['name'=>$request->roleName]);
         return response()->json(['check'=>true]);
@@ -80,9 +80,23 @@ class UserRoleController extends Controller
      * @param  \App\Models\UserM  $userM
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, UserM $userM)
+    public function update(Request $request, UserRoleM $userRoleM)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'id'=>'required|exists:role_tbl,id',
+            'roleName' => 'required|unique:role_tbl,name',
+            
+        ],[
+            'roleName.required'=>'Thiếu tên loại tài khoản',
+            'roleName.unique'=>'Loại Tài Khoản Đã Tồn Tại',
+            'id.required'=> 'Thiếu mã loại tài khoản',
+            'id.exists'=> 'Mã loại không tồn tại',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['check'=>false,'msg'=> $validator->errors()]);
+        }
+        UserRoleM::where('id',$request->id)->update(['name'=> $request->roleName]);
+        return response()->json(['check'=>true]);
     }
 
     /**

@@ -16,7 +16,8 @@ use App\Http\Controllers\UserRoleController;
 
 Route::controller(UserRoleController::class)->group(function () {
     Route::get('/userrole', 'index');
-    Route::post('/userrole', 'create');
+    Route::post('/addRole', 'create');
+    Route::post('/updateRole', 'update');
 });
 
 Route::controller(USerController::class)->group(function () {
