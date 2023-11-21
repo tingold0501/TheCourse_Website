@@ -205,6 +205,7 @@
           <div>
             <?php
             if(DB::connection()->getPdo()){
+              // alert("Successfully connected to the database =>" .DB::connection()->getDatabaseName());
               echo "Successfully connected to the database => " .DB::connection()->getDatabaseName(); 
             }
             ?>
@@ -431,6 +432,7 @@
       </div>
 
     </div>
+
   </main>
   <div class="fixed-plugin">
     <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
@@ -510,7 +512,7 @@
   <!--   Core JS Files   -->
   <script src="dashboard/assets/js/core/popper.min.js"></script>
   <script src="dashboard/assets/js/core/bootstrap.min.js"></script>
-  <script src="dashboard/assets/js/plugins/perfect-scrollbar.min.js"></script>
+  {{-- <script src="dashboard/assets/js/plugins/perfect-scrollbar.min.js"></script> --}}
   <script src="dashboard/assets/js/plugins/smooth-scrollbar.min.js"></script>
   <script src="dashboard/assets/js/plugins/chartjs.min.js"></script>
   <!-- <script>

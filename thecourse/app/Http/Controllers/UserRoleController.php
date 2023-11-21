@@ -46,9 +46,26 @@ class UserRoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function switchRole(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|exists:role_tbl,id',
+            'status'=>'required|numeric|min:0|max:1'
+            
+        ],[
+            'id.required'=>'Thiếu tên loại tài khoản',
+            'id.exists'=>'Mã Loại Tài Khoản Đã Tồn Tại',
+            'status.required'=>'Thiếu tên loại tài khoản',
+            'status.numeric'=>'Trạng thái không hợp lệ',
+            'status.min'=>'Trạng thái không hợp lệ',
+            'status.max'=>'Trạng thái không hợp lệ',
+
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['check'=>false,'msg'=> $validator->errors()]);
+        }
+        UserRoleM::where('id',$request->id)->update(['status'=> $request->status]);
+        return response()->json(['check'=>true]);
     }
 
     /**
@@ -99,14 +116,25 @@ class UserRoleController extends Controller
         return response()->json(['check'=>true]);
     }
 
+   
+
     /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\UserM  $userM
      * @return \Illuminate\Http\Response
      */
-    public function destroy(UserM $userM)
+    public function destroy(Request $request , UserRoleM $userRoleM)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'id'=>'required|exists:role_tbl,id',
+            
+        ],[
+            'id.required'=> 'Thiếu mã loại tài khoản',
+            'id.exists'=> 'Mã loại không tồn tại',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['check'=>false,'msg'=> $validator->errors()]);
+        }
     }
 }

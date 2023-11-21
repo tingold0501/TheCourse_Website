@@ -47,11 +47,8 @@
                                 <i class="fa fa-ellipsis-v text-secondary"></i>
                             </a>
                             <ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5" aria-labelledby="dropdownTable">
-                                <li><a data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                        class="dropdown-item border-radius-md" href="javascript:;" id="addRole">Add
+                                <li><a class="dropdown-item border-radius-md" href="javascript:;" id="addRole">Add
                                         Role</a></li>
-                                <li><a class="dropdown-item border-radius-md" href="javascript:;">Another action</a></li>
-                                <li><a class="dropdown-item border-radius-md" href="javascript:;">Something else here</a>
                                 </li>
                             </ul>
                         </div>
@@ -98,7 +95,7 @@
                                         <span class="text-xs font-weight-bold">{{ $item->created_at }}</span>
                                     </td>
                                     <td class="">
-                                        <select class="form-control" name="" id="">
+                                        <select class="form-control editRoleStatus" data-id="{{ $item->id }}">
                                             @if ($item->status == 0)
                                                 <option value="0" selected>Đang Khóa</option>
                                                 <option value="1">Đang Mở</option>
@@ -109,7 +106,7 @@
                                         </select>
                                     </td>
                                     <td class="  text-sm">
-                                        <button type="button" class="btn btn-danger">Xóa</button>
+                                        <button class="btn btn-danger deleteRole" data-id="{{ $item->id }}">Xóa</button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -136,44 +133,153 @@
         $(document).ready(function() {
             addRole();
             editRole();
+            switchRole();
+            deleteRole();
         });
 
-        function addRole() {
-            $('#submitAddRole').click(function(e) {
+        function deleteRole() {
+            $('.deleteRole').click(function(e) {
                 e.preventDefault();
-                var roleName = $('#roleName').val().trim();
-                if (roleName == '') {
-                    Toast.fire({
-                        icon: "warning",
-                        title: "Đã có tên Role đâu mà lưu! Ngáo à"
-                    });
-                } else {
-                    $.ajax({
-                        type: "post",
-                        url: "/addRole",
-                        data: {
-                            roleName: roleName
-                        },
-                        dataType: "JSON",
-                        success: function(res) {
-                            if (res.check == true) {
-                                Toast.fire({
-                                    icon: "success",
-                                    title: "Gữi yêu cầu thành công!"
-                                }).then(() => {
+                var id = $(this).attr('data-id');
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: "btn btn-success",
+                        cancelButton: "btn btn-danger"
+                    },
+                    buttonsStyling: false
+                });
+                swalWithBootstrapButtons.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "No, cancel!",
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: "post",
+                            url: "/deleteRole",
+                            data: {
+                                id: id
+                            },
+                            dataType: "JSON",
+                            success: function(res) {
+                                if (res.check == true) {
+                                    swalWithBootstrapButtons.fire({
+                                        title: "Deleted!",
+                                        text: "Your file has been deleted.",
+                                        icon: "success"
+                                    });
+
+                                }.then(() => {
                                     window.location.reload();
                                 })
+                                if (res.msg.id) {
+                                    Toast.fire({
+                                        icon: "error",
+                                        title: res.msg.id
+                                    })
+                                }
                             }
-                            if (res.msg.roleName) {
-                                Toast.fire({
-                                    icon: "error",
-                                    title: res.msg.roleName
-                                })
-                            }
-                        }
-                    });
-                }
+                        });
+
+                    } else if (
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
+                        swalWithBootstrapButtons.fire({
+                            title: "Cancelled",
+                            text: "Your imaginary file is safe :)",
+                            icon: "error"
+                        });
+                    }
+                });
+
+
             });
+        }
+
+        function switchRole() {
+            $('.editRoleStatus').change(function(e) {
+                e.preventDefault();
+                var id = $(this).attr('data-id');
+                var status = $(this).val();
+                $.ajax({
+                    type: "post",
+                    url: "/switchRole",
+                    data: {
+                        id: id,
+                        status: status
+                    },
+                    dataType: "JSON",
+                    success: function(res) {
+                        if (res.check == true) {
+                            Toast.fire({
+                                icon: "success",
+                                title: "Thay đổi trạng thái thành công"
+                            }).then(() => {
+                                window.location.reload();
+                            })
+                        }
+                        if (res.msg.id) {
+                            Toast.fire({
+                                icon: "error",
+                                title: res.msg.id
+                            });
+                        } else if (res.msg.status) {
+                            Toast.fire({
+                                icon: "error",
+                                title: res.msg.status
+                            });
+                        }
+                    }
+                });
+            });
+
+        }
+
+        function addRole() {
+            $('#addRole').click(function(e) {
+                e.preventDefault();
+                $('#exampleModal').modal('show');
+                $('#submitAddRole').click(function(e) {
+                    e.preventDefault();
+                    var roleName = $('#roleName').val().trim();
+                    if (roleName == '') {
+                        Toast.fire({
+                            icon: "warning",
+                            title: "Đã có tên Role đâu mà lưu! Ngáo à"
+                        });
+                    } else {
+                        $.ajax({
+                            type: "post",
+                            url: "/addRole",
+                            data: {
+                                roleName: roleName
+                            },
+                            dataType: "JSON",
+                            success: function(res) {
+                                if (res.check == true) {
+                                    Toast.fire({
+                                        icon: "success",
+                                        title: "Gữi yêu cầu thành công!"
+                                    }).then(() => {
+                                        window.location.reload();
+                                    })
+                                }
+                                if (res.msg.roleName) {
+                                    Toast.fire({
+                                        icon: "error",
+                                        title: res.msg.roleName
+                                    })
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+
         }
 
         function editRole() {
@@ -210,17 +316,16 @@
                                     Toast.fire({
                                         icon: "success",
                                         title: "Thay Đổi Thành Công"
-                                    }).then(()=>{
+                                    }).then(() => {
                                         window.location.reload();
                                     })
                                 }
-                                if(res.msg.id){
+                                if (res.msg.id) {
                                     Toast.fire({
                                         icon: "error",
                                         title: res.msg.id
                                     });
-                                }
-                                else if(res.msg.roleName){
+                                } else if (res.msg.roleName) {
                                     Toast.fire({
                                         icon: "error",
                                         title: res.msg.roleName

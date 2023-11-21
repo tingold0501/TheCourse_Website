@@ -18,6 +18,8 @@ Route::controller(UserRoleController::class)->group(function () {
     Route::get('/userrole', 'index');
     Route::post('/addRole', 'create');
     Route::post('/updateRole', 'update');
+    Route::post('/switchRole', 'switchRole');
+    Route::post('/deleteRole', 'destroy');
 });
 
 Route::controller(USerController::class)->group(function () {
