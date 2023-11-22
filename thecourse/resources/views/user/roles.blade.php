@@ -171,11 +171,11 @@
                                         title: "Deleted!",
                                         text: "Your file has been deleted.",
                                         icon: "success"
-                                    });
-
-                                }.then(() => {
+                                    }).then(() => {
                                     window.location.reload();
                                 })
+
+                                }
                                 if (res.msg.id) {
                                     Toast.fire({
                                         icon: "error",

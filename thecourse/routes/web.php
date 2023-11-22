@@ -15,11 +15,10 @@ Route::controller(UserRoleController::class)->group(function () {
 
 Route::controller(USerController::class)->group(function () {
     Route::get('/user', 'index');
+    Route::post('/user', 'create');
 });
 
-Route::controller(ReactAPIController::class)->group(function () {
-    Route::get('/api/data','getDataReact');
-});
+
 
 
 
